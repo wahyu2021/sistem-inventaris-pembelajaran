@@ -5,7 +5,7 @@ Sistem Inventaris Pembelajaran ini dikembangkan menggunakan PHP Native (tanpa fr
 
 ## 📁 Struktur Direktori
 
-```
+```plaintext
 inventaris-pembelajaran/
 │
 ├── assets/           # File statis seperti CSS, JavaScript, dan gambar
