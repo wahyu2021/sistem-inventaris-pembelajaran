@@ -34,10 +34,11 @@ inventaris-pembelajaran/
 │   ├── pengguna/
 │   └── laporan/
 │
-├── proses/           # File proses CRUD (Create, Read, Update, Delete)
-│   ├── barang_proses.php
-│   ├── kategori_proses.php
-│   └── login_proses.php
+├── Controller/           # File proses CRUD (Create, Read, Update, Delete)
+│   ├── BarangController.php
+│   ├── KategoriController.php
+│   ├── UserController.php
+│   └── LaporanController.php
 │
 ├── uploads/          # Tempat penyimpanan gambar/file yang diunggah
 │   └── barang/
