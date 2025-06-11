@@ -74,7 +74,7 @@ Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
 1.  **Clone Keajaiban Ini (Jika dari Repo):**
 
     ```bash
-    git clone [https://github.com/wahyu2021/sistem-inventaris-pembelajaran-v2.git](https://github.com/wahyu2021/sistem-inventaris-pembelajaran-v2.git) sisinpem
+    git clone [https://github.com/wahyu2021/sistem-inventaris-pembelajaran.git](https://github.com/wahyu2021/sistem-inventaris-pembelajaran.git) sisinpem
     cd sisinpem
     ```
 
