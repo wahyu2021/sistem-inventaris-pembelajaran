@@ -9,14 +9,24 @@
         <div class="max-w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 lg:p-8">
 
-                {{-- Judul dan Tombol Tambah --}}
+                {{-- Judul, button tambah, button download --}}
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold text-gray-800 mb-2 sm:mb-0">Daftar Laporan Kerusakan</h3>
-                    <button wire:click="openCreateModal()"
-                        class="inline-flex items-center px-4 py-2 bg-blue-700 text-white text-sm font-semibold rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                        <x-heroicon-o-plus class="w-4 h-4 mr-2" />
-                        Tambah Laporan
-                    </button>
+                    <div class="flex space-x-2">
+                        {{-- Tombol Export Baru --}}
+                        <button wire:click="export"
+                            class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-700">
+                            <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-2" />
+                            Export ke Excel
+                        </button>
+
+                        {{-- Tombol Tambah Laporan yang sudah ada --}}
+                        <button wire:click="openCreateModal()"
+                            class="inline-flex items-center px-4 py-2 bg-blue-700 text-white text-sm font-semibold rounded-md hover:bg-blue-800">
+                            <x-heroicon-o-plus class="w-4 h-4 mr-2" />
+                            Tambah Laporan
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Pesan Flash --}}

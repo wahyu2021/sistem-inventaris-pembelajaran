@@ -10,6 +10,9 @@ use Exception;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use App\Exports\DamageReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DamageReportManager extends Component
 {
@@ -106,6 +109,25 @@ class DamageReportManager extends Component
 
         $this->confirmingReportDeletion = false;
         $this->reportToDeleteId = null;
+    }
+
+    /**
+    * Memicu unduhan file CSV berdasarkan filter yang aktif.
+    */
+    public function export(): BinaryFileResponse
+    {
+        $fileName = 'laporan-kerusakan-' . now()->format('d-m-Y') . '.xlsx';
+
+        // Mengirim nilai filter saat ini ke kelas Export
+        return Excel::download(
+            new DamageReportExport(
+                $this->search,
+                $this->filterStatus,
+                $this->filterLocation,
+                $this->filterSeverity
+            ),
+            $fileName
+        );
     }
 
     public function render()

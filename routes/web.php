@@ -13,6 +13,7 @@ use App\Livewire\Mahasiswa\MyDamageReports;
 
 // Mahasiswa
 use App\Livewire\Mahasiswa\ReportDamageForm;
+use App\Livewire\Mahasiswa\NotificationViewer;
 use App\Livewire\Mahasiswa\Dashboard as MahasiswaDashboard;
 use Illuminate\Support\Facades\Auth; // Tambahkan ini untuk mengakses Auth
 use App\Livewire\Admin\Dashboard as AdminDashboard; // Nama komponen baru kita
@@ -73,6 +74,7 @@ Route::middleware([
             ->where('location', '[0-9]+'); // validasi agar hanya angka
 
         Route::get('/laporan-saya', MyDamageReports::class)->name('damages.my');
+        Route::get('/notifikasi', NotificationViewer::class)->name('notifications.index');
     });
     // Rute lain yang memerlukan autentikasi tetapi tidak spesifik peran bisa diletakkan di sini
     // Misalnya, halaman profil pengguna yang mungkin di-handle oleh Jetstream/Fortify.

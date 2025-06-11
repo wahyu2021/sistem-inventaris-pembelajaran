@@ -28,8 +28,8 @@
 
                     {{-- Cek Peran Pengguna untuk Menampilkan Navigasi yang Sesuai --}}
                     @if (Auth::check())
+                        {{-- === NAVIGASI UNTUK ADMIN === --}}
                         @if (Auth::user()->isAdmin())
-                            {{-- === NAVIGASI UNTUK ADMIN === --}}
                             <a href="{{ route('admin.dashboard') }}"
                                 title="{{ !$sidebarOpen ? __('Dashboard Admin') : '' }}"
                                 class="flex items-center py-2.5 px-3 rounded-md hover:bg-blue-600 group transition-colors duration-150
@@ -81,9 +81,9 @@
                                 <span
                                     class="{{ $sidebarOpen ? 'inline' : 'hidden' }} truncate">{{ __('Notifikasi') }}</span>
                             </a>
-                            {{-- Tambahkan link admin lainnya jika ada --}}
-                        @elseif (Auth::user()->isMahasiswa())
+
                             {{-- === NAVIGASI UNTUK MAHASISWA === --}}
+                        @elseif (Auth::user()->isMahasiswa())
                             <a href="{{ route('mahasiswa.dashboard') }}"
                                 title="{{ !$sidebarOpen ? __('Dashboard Mahasiswa') : '' }}"
                                 class="flex items-center py-2.5 px-3 rounded-md hover:bg-blue-600 group transition-colors duration-150
@@ -105,16 +105,26 @@
                                     class="mt-0.5 {{ $sidebarOpen ? 'inline' : 'hidden' }} truncate">{{ __('Cek & Lapor Barang') }}</span>
                             </a>
 
-                            {{-- Opsional: Link untuk mahasiswa melihat laporannya sendiri --}}
-                            @if (Route::has('mahasiswa.damages.my'))
-                            <a href="{{ route('mahasiswa.damages.my') }}" title="{{ !$sidebarOpen ? __('Laporan Saya') : '' }}"
+                            <a href="{{ route('mahasiswa.damages.my') }}"
+                                title="{{ !$sidebarOpen ? __('Laporan Saya') : '' }}"
                                 class="flex items-center py-2.5 px-3 rounded-md hover:bg-blue-600 group transition-colors duration-150
                                 {{ request()->routeIs('mahasiswa.damages.my') ? 'bg-blue-800' : '' }}
                                 {{ !$sidebarOpen ? 'justify-center' : '' }}">
-                                <x-heroicon-o-document-text class="h-6 w-6 shrink-0 {{ $sidebarOpen ? 'mr-3' : '' }}" />
-                                <span class="{{ $sidebarOpen ? 'inline' : 'hidden' }} truncate">{{ __('Laporan Saya') }}</span>
+                                <x-heroicon-o-document-text
+                                    class="h-6 w-6 shrink-0 {{ $sidebarOpen ? 'mr-3' : '' }}" />
+                                <span
+                                    class="{{ $sidebarOpen ? 'inline' : 'hidden' }} truncate">{{ __('Laporan Saya') }}</span>
                             </a>
-                            @endif
+
+                            <a href="{{ route('mahasiswa.notifications.index') }}"
+                                title="{{ !$sidebarOpen ? __('Notifikasi') : '' }}"
+                                class="flex items-center py-2.5 px-3 rounded-md hover:bg-blue-600 group transition-colors duration-150
+                                {{ request()->routeIs('mahasiswa.notifications.index') ? 'bg-blue-800' : '' }}
+                                {{ !$sidebarOpen ? 'justify-center' : '' }}">
+                                <x-heroicon-o-bell class="h-6 w-6 shrink-0 {{ $sidebarOpen ? 'mr-3' : '' }}" />
+                                <span
+                                    class="{{ $sidebarOpen ? 'inline' : 'hidden' }} truncate">{{ __('Notifikasi') }}</span>
+                            </a>
                         @endif
                     @endif
                     {{-- Akhir dari link navigasi baru --}}

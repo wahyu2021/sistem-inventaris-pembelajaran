@@ -2,119 +2,74 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\DamageReport;
-use App\Models\Location;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
+use App\Services\AdminDashboardService;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection as SupportCollection;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
-    // Gunakan Type Hinting untuk kejelasan dan keamanan tipe data.
-    public int $totalLocations;
-    public int $openDamageReports;
-    public int $totalUsers;
-    public int $reportsCompletedThisMonth;
+    // Properti untuk data yang akan ditampilkan di view
+    public int $totalLocations = 0;
+    public int $openDamageReports = 0;
+    public int $totalUsers = 0;
+    public int $reportsCompletedThisMonth = 0;
     public SupportCollection $damageReportsByStatus;
     public SupportCollection $usersByRole;
-    public Collection $recentLocations;
-    public Collection $recentDamageReports;
+    public EloquentCollection $recentLocations;
+    public EloquentCollection $recentDamageReports;
+    public array $reportsByStatusChart = [];
+    public array $reportsByLocationChart = [];
+    public array $reportsByMonthChart = [];
 
-    /**
-     * Metode mount dijalankan sekali saat komponen diinisialisasi.
-     * Mengambil semua data yang dibutuhkan untuk dashboard.
-     */
-    public function mount(): void
+    public function __construct()
     {
-        $this->loadDashboardData();
+        // Inisialisasi koleksi kosong untuk menghindari error pada render awal
+        $this->damageReportsByStatus = collect();
+        $this->usersByRole = collect();
+        $this->recentLocations = new EloquentCollection();
+        $this->recentDamageReports = new EloquentCollection();
     }
 
     /**
-     * Memuat ulang semua data dashboard.
-     * Dapat dipanggil untuk me-refresh data secara dinamis.
+     * Mount komponen dan muat semua data melalui service.
      */
-    public function loadDashboardData(): void
+    public function mount(AdminDashboardService $dashboardService): void
     {
-        // Memanggil metode privat untuk setiap set data.
-        $this->totalLocations = $this->getTotalLocations();
-        $this->openDamageReports = $this->getOpenDamageReports();
-        $this->totalUsers = $this->getTotalUsers();
-        $this->reportsCompletedThisMonth = $this->getCompletedReportsThisMonth();
-        $this->damageReportsByStatus = $this->getDamageReportsByStatus();
-        $this->usersByRole = $this->getUsersByRole();
-        $this->recentLocations = $this->getRecentLocations();
-        $this->recentDamageReports = $this->getRecentDamageReports();
-    }
-
-    // Metode privat untuk setiap kueri data. Ini membuat `loadDashboardData` lebih bersih.
-
-    private function getTotalLocations(): int
-    {
-        return Location::count();
-    }
-
-    private function getOpenDamageReports(): int
-    {
-        // Status 'terbuka' didefinisikan secara eksplisit.
-        $openStatuses = ['dilaporkan', 'diverifikasi', 'dalam_perbaikan'];
-        return DamageReport::whereIn('status', $openStatuses)->count();
-    }
-
-    private function getTotalUsers(): int
-    {
-        return User::count();
-    }
-
-    private function getCompletedReportsThisMonth(): int
-    {
-        // Kueri yang lebih spesifik untuk laporan yang selesai bulan ini.
-        return DamageReport::where('status', 'selesai_diperbaiki')
-            ->whereYear('resolved_at', now()->year)
-            ->whereMonth('resolved_at', now()->month)
-            ->count();
-    }
-
-    private function getDamageReportsByStatus(): SupportCollection
-    {
-        // Menggunakan raw query untuk performa dan pengurutan custom.
-        return DamageReport::query()
-            ->selectRaw('status, count(*) as count')
-            ->groupBy('status')
-            ->orderByRaw("FIELD(status, 'dilaporkan', 'diverifikasi', 'dalam_perbaikan', 'selesai_diperbaiki', 'dihapuskan')")
-            ->pluck('count', 'status');
-    }
-
-    private function getUsersByRole(): SupportCollection
-    {
-        return User::query()
-            ->selectRaw('role, count(*) as count')
-            ->groupBy('role')
-            ->pluck('count', 'role');
-    }
-
-    private function getRecentLocations(int $limit = 5): Collection
-    {
-        // Mengambil lokasi terbaru dengan limit.
-        return Location::latest()->take($limit)->get();
-    }
-
-    private function getRecentDamageReports(int $limit = 5): Collection
-    {
-        // Eager load relasi 'location' untuk menghindari N+1 query.
-        return DamageReport::with('location:id,name')
-            ->latest('reported_at')
-            ->take($limit)
-            ->get();
+        $this->loadDashboardData($dashboardService);
     }
 
     /**
-     * Render view komponen Livewire.
+     * Memuat semua data dashboard dari service dan menetapkannya ke properti publik.
      */
+    public function loadDashboardData(AdminDashboardService $dashboardService): void
+    {
+        // Ambil data statistik dan ringkasan
+        $stats = $dashboardService->getStats();
+        $summaries = $dashboardService->getSummaries();
+
+        // Tetapkan data ke properti
+        $this->totalLocations = $stats['totalLocations'];
+        $this->openDamageReports = $stats['openDamageReports'];
+        $this->totalUsers = $stats['totalUsers'];
+        $this->reportsCompletedThisMonth = $stats['reportsCompletedThisMonth'];
+        $this->damageReportsByStatus = $summaries['damageReportsByStatus'];
+        $this->usersByRole = $summaries['usersByRole'];
+
+        // Ambil data grafik (menggunakan data ringkasan status yang sudah ada untuk efisiensi)
+        $chartData = $dashboardService->getChartData($this->damageReportsByStatus);
+        $this->reportsByStatusChart = $chartData['reportsByStatusChart'];
+        $this->reportsByLocationChart = $chartData['reportsByLocationChart'];
+        $this->reportsByMonthChart = $chartData['reportsByMonthChart'];
+
+        // Ambil data aktivitas terbaru
+        $recentActivities = $dashboardService->getRecentActivities();
+        $this->recentLocations = $recentActivities['recentLocations'];
+        $this->recentDamageReports = $recentActivities['recentDamageReports'];
+    }
+
     public function render()
     {
-        // Semua properti sudah diisi di `mount()`, jadi view langsung merendernya.
         return view('livewire.admin.dashboard')->layout('layouts.app');
     }
 }

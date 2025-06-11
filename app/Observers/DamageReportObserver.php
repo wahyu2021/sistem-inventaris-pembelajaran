@@ -2,10 +2,11 @@
 
 namespace App\Observers;
 
-use App\Models\DamageReport;
 use App\Models\User;
-use App\Notifications\DamageReportSubmittedNotification;
+use App\Models\DamageReport;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\DamageReportStatusUpdated;
+use App\Notifications\DamageReportSubmittedNotification;
 
 class DamageReportObserver
 {
@@ -23,10 +24,20 @@ class DamageReportObserver
 
     /**
      * Handle the DamageReport "updated" event.
+     * Kirim notifikasi ke mahasiswa yang melapor jika status berubah.
      */
     public function updated(DamageReport $damageReport): void
     {
-        //
+        // Periksa apakah kolom 'status' benar-benar berubah
+        if ($damageReport->wasChanged('status')) {
+            // Dapatkan user yang membuat laporan
+            $reporter = $damageReport->userReportedBy;
+
+            // Pastikan user tersebut ada dan bukan admin yang mengubah laporannya sendiri
+            if ($reporter && $reporter->role === 'mahasiswa') {
+                $reporter->notify(new DamageReportStatusUpdated($damageReport));
+            }
+        }
     }
 
     /**
