@@ -71,7 +71,7 @@ SISINPEM memanfaatkan kekuatan teknologi web modern untuk performa dan pengalama
 
 Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
 
-1.  **Clone Keajaiban Ini (Jika dari Repo):**
+1.  **Clone GIT:**
 
     ```bash
     git clone [https://github.com/wahyu2021/sistem-inventaris-pembelajaran.git](https://github.com/wahyu2021/sistem-inventaris-pembelajaran.git) sisinpem
@@ -80,26 +80,26 @@ Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
 
     Atau buat proyek baru: `composer create-project laravel/laravel sisinpem "11.*"`
 
-2.  **Instal Semua Kebutuhan Magis (Dependensi PHP):**
+2.  **Instal Semua Dependensi PHP:**
 
     ```bash
     composer install
     ```
 
-3.  **Persiapkan Mantra Environment Anda:**
+3.  **Persiapan Environment :**
     Salin `.env.example` menjadi `.env`:
 
     ```bash
     cp .env.example .env
     ```
 
-4.  **Generate Kunci Sakti Aplikasi:**
+4.  **Generate Kunci Aplikasi:**
 
     ```bash
     php artisan key:generate
     ```
 
-5.  **Atur Koneksi ke Harta Karun Anda (Database di `.env`):**
+5.  **Atur Koneksi ke Database (Database di `.env`):**
 
     ```env
     DB_CONNECTION=mysql
@@ -112,7 +112,7 @@ Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
     APP_URL=http://localhost:8000 # Penting untuk URL yang benar!
     ```
 
-6.  **Bangun Kerajaan Data Anda (Migrasi & Seeder):**
+6.  **Jalankan Migrasi & Seeder:**
 
     ```bash
     php artisan migrate --seed
