@@ -6,103 +6,81 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DamageReport;
-use App\Models\Location; // Untuk filter lokasi
+use App\Models\Location;
+use Illuminate\Contracts\View\View;
 
 class MyDamageReports extends Component
 {
     use WithPagination;
 
-    public $search = '';
-    public $filterStatus = '';
-    public $filterSeverity = '';
-    public $filterLocation = ''; // Filter berdasarkan lokasi
+    // Properti filter
+    public string $search = '';
+    public string $filterStatus = '';
+    public string $filterSeverity = '';
+    public string $filterLocation = '';
 
-    public $allLocations; // Daftar lokasi untuk dropdown filter
-    public $allowedSeverities; // Daftar tingkat kerusakan
-    public $allowedStatuses = ['dilaporkan', 'diverifikasi', 'dalam_perbaikan', 'selesai_diperbaiki', 'dihapuskan']; // Daftar status yang diizinkan
+    // Properti untuk Modal Detail
+    public ?DamageReport $selectedReportDetail = null;
+    public bool $isReportDetailModalOpen = false;
 
-    public $selectedReportDetail; // Untuk modal detail
-    public $isReportDetailModalOpen = false;
+    protected string $paginationTheme = 'tailwind';
 
-    protected $paginationTheme = 'tailwind';
-
-    // Reset paginasi saat filter atau pencarian berubah
-    public function updatingSearch()
+    /**
+     * Reset paginasi setiap kali ada perubahan pada properti filter.
+     */
+    public function updated(string $property): void
     {
-        $this->resetPage();
-    }
-    public function updatingFilterStatus()
-    {
-        $this->resetPage();
-    }
-    public function updatingFilterSeverity()
-    {
-        $this->resetPage();
-    }
-    public function updatingFilterLocation()
-    {
-        $this->resetPage();
-    }
-
-
-    public function mount()
-    {
-        $this->allLocations = Location::orderBy('name')->get(['id', 'name']);
-        $this->allowedSeverities = DamageReport::$allowedSeverities;
-    }
-
-    public function render()
-    {
-        $user = Auth::user();
-
-        $query = $user->damageReports() // Ambil laporan hanya untuk user yang login
-            ->with(['location:id,name', 'userReportedBy:id,name']) // Eager load relasi
-            ->orderBy('reported_at', 'desc');
-
-        // Apply filters
-        if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('description', 'like', '%' . $this->search . '%')
-                    ->orWhere('reported_by', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('location', function ($locationQuery) {
-                        $locationQuery->where('name', 'like', '%' . $this->search . '%');
-                    });
-            });
+        if (in_array($property, ['search', 'filterStatus', 'filterSeverity', 'filterLocation'])) {
+            $this->resetPage();
         }
-
-        if (!empty($this->filterStatus)) {
-            $query->where('status', $this->filterStatus);
-        }
-
-        if (!empty($this->filterSeverity)) {
-            $query->where('severity', $this->filterSeverity);
-        }
-
-        if (!empty($this->filterLocation)) {
-            $query->where('location_id', $this->filterLocation);
-        }
-
-        $myReports = $query->paginate(10); // Paginate the results
-
-        return view('livewire.mahasiswa.my-damage-reports', [
-            'myReports' => $myReports,
-        ])->layout('layouts.app');
     }
 
-    // Metode untuk menampilkan detail laporan di modal
-    public function showReportDetail($reportId)
+    /**
+     * Mengambil data laporan dan menampilkannya di modal.
+     */
+    public function showReportDetail(int $reportId): void
     {
-        // Pastikan laporan ini milik user yang sedang login
-        $this->selectedReportDetail = Auth::user()->damageReports()->with(['location', 'userReportedBy'])->find($reportId);
+        // Pastikan laporan ini milik user yang sedang login dan eager load relasinya
+        $this->selectedReportDetail = Auth::user()->damageReports()
+            ->with(['location', 'userReportedBy'])
+            ->find($reportId);
 
         if ($this->selectedReportDetail) {
             $this->isReportDetailModalOpen = true;
         }
     }
 
-    public function closeReportDetailModal()
+    /**
+     * Menutup modal detail.
+     */
+    public function closeReportDetailModal(): void
     {
         $this->isReportDetailModalOpen = false;
         $this->selectedReportDetail = null;
+    }
+
+    /**
+     * Merender komponen.
+     */
+    public function render(): View
+    {
+        $query = Auth::user()->damageReports()
+            ->with(['location:id,name'])
+            ->when($this->search, function ($q, $search) {
+                $q->where(function ($subQ) use ($search) {
+                    $subQ->where('description', 'like', '%' . $search . '%')
+                        ->orWhereHas('location', fn($locQ) => $locQ->where('name', 'like', '%' . $search . '%'));
+                });
+            })
+            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterSeverity, fn($q) => $q->where('severity', $this->filterSeverity))
+            ->when($this->filterLocation, fn($q) => $q->where('location_id', $this->filterLocation));
+
+        return view('livewire.mahasiswa.my-damage-reports', [
+            'myReports' => $query->latest('reported_at')->paginate(10),
+            'allLocations' => Location::orderBy('name')->get(['id', 'name']),
+            'allowedSeverities' => DamageReport::$allowedSeverities,
+            'allowedStatuses' => ['dilaporkan', 'diverifikasi', 'dalam_perbaikan', 'selesai_diperbaiki', 'dihapuskan'],
+        ])->layout('layouts.app');
     }
 }
