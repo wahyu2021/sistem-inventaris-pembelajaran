@@ -15,9 +15,9 @@ class DamageReportObserver
     public function created(DamageReport $damageReport): void
     {
         $admins = User::where('role', 'admin')->get();
-        if ($admins->isNotEmpty())
-        {
-            Notification::send($admins, new DamageReportSubmittedNotification($damageReport));
+        if ($admins->isNotEmpty()) {
+            // Kirim hanya ID-nya saja, bukan seluruh objek.
+            Notification::send($admins, new DamageReportSubmittedNotification($damageReport->id));
         }
     }
 

@@ -4,22 +4,25 @@ namespace App\Notifications;
 
 use App\Models\DamageReport;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Contracts\Queue\ShouldQueue; // Pastikan notifikasi ini adalah ShouldQueue
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
 
-class DamageReportSubmittedNotification extends Notification
+// Implementasikan ShouldQueue agar Laravel tahu untuk mengantrekannya
+class DamageReportSubmittedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public DamageReport $report;
+    // Ubah dari objek menjadi ID (integer)
+    public int $reportId;
 
     /**
      * Create a new notification instance.
+     * Terima hanya ID, bukan seluruh objek.
      */
-    public function __construct(DamageReport $report)
+    public function __construct(int $reportId)
     {
-        $this->report = $report;
+        $this->reportId = $reportId;
     }
 
     /**
@@ -33,31 +36,26 @@ class DamageReportSubmittedNotification extends Notification
     }
 
     /**
-     * Get the mail representation of the notification.
-     */
-    // public function toMail(object $notifiable): MailMessage
-    // {
-    //     return (new MailMessage)
-    //                 ->line('The introduction to the notification.')
-    //                 ->action('Notification Action', url('/'))
-    //                 ->line('Thank you for using our application!');
-    // }
-
-    /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
     public function toArray(object $notifiable): array
-    {   
-        $locationName = $this->report->location ? $this->report->location->name : 'Tidak diketahui';
-        $reporterName = $this->report->reported_by ?: 'Tidak diketahui'; 
+    {
+        $report = DamageReport::find($this->reportId);
+        if (!$report) {
+            return [];
+        }
+
+        $locationName = $report->location ? $report->location->name : 'Tidak diketahui';
+        $reporterName = $report->reported_by ?: 'Tidak diketahui';
+
         return [
-            'reported_id' => $this->report->id,
+            'reported_id' => $report->id,
             'location_name' => $locationName,
             'reporter_name' => $reporterName,
-            'severity' => $this->report->severity,
-            'message' => "Laporan kerusakan baru untuk ruangan'{$locationName}' dari {$reporterName}.",
+            'severity' => $report->severity,
+            'message' => "Laporan kerusakan baru untuk ruangan '{$locationName}' dari {$reporterName}.",
             'type' => 'damage_report_submitted',
         ];
     }

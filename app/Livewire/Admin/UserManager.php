@@ -1,171 +1,124 @@
 <?php
 
-namespace App\Livewire\Admin; // Sesuaikan namespace jika perlu
+namespace App\Livewire\Admin;
 
+use App\Livewire\Forms\UserForm;
+use App\Models\User;
+use App\Services\UserService;
 use Livewire\Component;
-use App\Models\User; // Pastikan model User Anda ada di App\Models\User
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth; // Untuk mencegah delete diri sendiri
+use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class UserManager extends Component
 {
     use WithPagination;
 
-    // Properti untuk form modal
-    public $userId;
-    public $name;
-    public $email;
-    public $password;
-    public $password_confirmation;
-    public $role;
+    public UserForm $form;
 
-    // Properti untuk UI
-    public $isOpen = false;
-    public $search = '';
-    public $filterRole = ''; // Untuk filter berdasarkan role
+    // Properti UI
+    public bool $isModalOpen = false;
+    public string $search = '';
+    public string $filterRole = '';
+    public array $allowedRoles = ['admin', 'mahasiswa'];
 
-    // Daftar peran yang diizinkan
-    public $allowedRoles = ['admin', 'mahasiswa']; // Sesuaikan dengan kebutuhan Anda
+    // Properti untuk Modal Konfirmasi Hapus
+    public ?int $userToDeleteId = null;
+    public bool $confirmingUserDeletion = false;
 
-    protected $paginationTheme = 'tailwind'; // Atau 'tailwind'
+    protected $paginationTheme = 'tailwind';
 
-    protected function rules()
+    public function updatingSearch(): void
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($this->userId),
-            ],
-            'role' => ['required', Rule::in($this->allowedRoles)],
-        ];
+        $this->resetPage();
+    }
 
-        // Aturan password: wajib saat membuat, opsional saat edit
-        if (!$this->userId) { // Mode Create
-            $rules['password'] = 'required|string|min:8|confirmed';
-        } else { // Mode Edit
-            $rules['password'] = 'nullable|string|min:8|confirmed';
+    public function updatingFilterRole(): void
+    {
+        $this->resetPage();
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->form->reset();
+        $this->isModalOpen = true;
+    }
+
+    public function openEditModal(User $user): void
+    {
+        $this->form->setUser($user);
+        $this->isModalOpen = true;
+    }
+
+    public function save(UserService $userService): void
+    {
+        $this->form->validate();
+
+        try {
+            if ($this->form->userId) {
+                $userService->updateUser($this->form->user, $this->form->data());
+                session()->flash('message', 'Data pengguna berhasil diperbarui.');
+            } else {
+                $userService->createUser($this->form->data());
+                session()->flash('message', 'Pengguna baru berhasil ditambahkan.');
+            }
+        } catch (Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-        return $rules;
+        $this->isModalOpen = false;
     }
 
-    protected $messages = [
-        'name.required' => 'Nama pengguna wajib diisi.',
-        'email.required' => 'Alamat email wajib diisi.',
-        'email.email' => 'Format email tidak valid.',
-        'email.unique' => 'Alamat email sudah terdaftar.',
-        'password.required' => 'Password wajib diisi.',
-        'password.min' => 'Password minimal 8 karakter.',
-        'password.confirmed' => 'Konfirmasi password tidak cocok.',
-        'role.required' => 'Peran pengguna wajib dipilih.',
-        'role.in' => 'Peran pengguna tidak valid.',
-    ];
-
-    public function render()
+    /**
+     * Membuka modal konfirmasi penghapusan pengguna.
+     */
+    public function confirmUserDeletion(int $id): void
     {
-        $query = User::query();
-
-        if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
-            });
-        }
-
-        if (!empty($this->filterRole)) {
-            $query->where('role', $this->filterRole);
-        }
-
-        $users = $query->orderBy('name', 'asc')->paginate(10);
-
-        return view('livewire.admin.user-manager', [ // Pastikan path view benar
-            'users' => $users,
-        ])->layout('layouts.app'); // Sesuaikan dengan layout admin Anda
+        $this->userToDeleteId = $id;
+        $this->confirmingUserDeletion = true;
     }
 
-    public function create()
+    /**
+     * Menghapus pengguna setelah dikonfirmasi.
+     */
+    public function deleteUser(UserService $userService): void
     {
-        $this->resetInputFields();
-        $this->openModal();
-    }
-
-    public function openModal()
-    {
-        $this->isOpen = true;
-        $this->resetErrorBag();
-        $this->resetValidation();
-    }
-
-    public function closeModal()
-    {
-        $this->isOpen = false;
-        $this->resetInputFields();
-    }
-
-    private function resetInputFields()
-    {
-        $this->userId = null;
-        $this->name = '';
-        $this->email = '';
-        $this->password = '';
-        $this->password_confirmation = '';
-        $this->role = 'mahasiswa'; // Default role saat membuat baru
-    }
-
-    public function store()
-    {
-        $validatedData = $this->validate();
-
-        $userData = [
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'role' => $validatedData['role'],
-        ];
-
-        // Hanya update password jika diisi (terutama untuk mode edit)
-        if (!empty($validatedData['password'])) {
-            $userData['password'] = Hash::make($validatedData['password']);
-        }
-
-        User::updateOrCreate(['id' => $this->userId], $userData);
-
-        session()->flash(
-            'message',
-            $this->userId ? 'Data pengguna berhasil diperbarui.' : 'Pengguna baru berhasil ditambahkan.'
-        );
-
-        $this->closeModal();
-    }
-
-    public function edit(User $user)
-    {
-        $this->userId = $user->id;
-        $this->name = $user->name;
-        $this->email = $user->email;
-        $this->role = $user->role;
-        $this->password = ''; // Kosongkan field password saat edit
-        $this->password_confirmation = '';
-
-        $this->openModal();
-    }
-
-    public function delete(User $user)
-    {
-        // Opsional: Mencegah pengguna menghapus akunnya sendiri
-        if (Auth::id() === $user->id) {
-            session()->flash('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        $user = User::find($this->userToDeleteId);
+        if (!$user) {
+            session()->flash('error', 'Pengguna tidak ditemukan.');
+            $this->confirmingUserDeletion = false;
             return;
         }
 
-        // Opsional: Mencegah penghapusan admin terakhir (jika diperlukan logika tambahan)
+        try {
+            $userService->deleteUser($user);
+            session()->flash('message', 'Pengguna berhasil dihapus.');
+        } catch (Exception $e) {
+            session()->flash('error', 'Gagal menghapus: ' . $e->getMessage());
+        }
 
-        $user->delete();
-        session()->flash('message', 'Pengguna berhasil dihapus.');
+        $this->confirmingUserDeletion = false;
+        $this->userToDeleteId = null;
+    }
+
+    public function render()
+    {
+        $query = User::query()
+            // ->where('id', '!=', Auth::id()) // Jangan tampilkan user yang sedang login
+            ->when(
+                $this->search,
+                fn($q) =>
+                $q->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%')
+            )
+            ->when(
+                $this->filterRole,
+                fn($q) =>
+                $q->where('role', $this->filterRole)
+            );
+
+        return view('livewire.admin.user-manager', [
+            'users' => $query->orderBy('name', 'asc')->paginate(10),
+        ])->layout('layouts.app');
     }
 }

@@ -1,84 +1,120 @@
 <?php
 
-namespace App\Livewire\Admin; // Sesuaikan namespace jika direktori berbeda
+namespace App\Livewire\Admin;
 
-use Livewire\Component;
-use App\Models\Location;    // Pastikan path model benar
-use App\Models\DamageReport; // Pastikan path model benar
-use App\Models\User;         // Pastikan path model benar
-use Illuminate\Support\Facades\DB; // Untuk query yang lebih kompleks jika perlu
+use App\Models\DamageReport;
+use App\Models\Location;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
+use Livewire\Component;
 
 class Dashboard extends Component
 {
-    // Properti untuk menyimpan data statistik
-    public $totalLocations;
-    public $openDamageReports;
-    public $totalUsers;
-    public $reportsCompletedThisMonth;
-
-    public $damageReportsByStatus;
-    public $usersByRole;
-
-    public $recentLocations;
-    public $recentDamageReports;
+    // Gunakan Type Hinting untuk kejelasan dan keamanan tipe data.
+    public int $totalLocations;
+    public int $openDamageReports;
+    public int $totalUsers;
+    public int $reportsCompletedThisMonth;
+    public SupportCollection $damageReportsByStatus;
+    public SupportCollection $usersByRole;
+    public Collection $recentLocations;
+    public Collection $recentDamageReports;
 
     /**
-     * Logika yang dijalankan saat komponen pertama kali dimuat.
+     * Metode mount dijalankan sekali saat komponen diinisialisasi.
      * Mengambil semua data yang dibutuhkan untuk dashboard.
      */
-    public function mount()
+    public function mount(): void
     {
         $this->loadDashboardData();
     }
 
     /**
-     * Metode untuk memuat atau memuat ulang data dashboard.
-     * Bisa dipanggil lagi jika ada aksi yang memerlukan refresh data.
+     * Memuat ulang semua data dashboard.
+     * Dapat dipanggil untuk me-refresh data secara dinamis.
      */
-    public function loadDashboardData()
+    public function loadDashboardData(): void
     {
-        // Kartu Statistik Utama
-        $this->totalLocations = Location::count();
-        $this->openDamageReports = DamageReport::whereNotIn('status', ['selesai_diperbaiki', 'dihapuskan'])->count();
-        $this->totalUsers = User::count();
-        $this->reportsCompletedThisMonth = DamageReport::where('status', 'selesai_diperbaiki')
-            ->whereMonth('resolved_at', now()->month)
-            ->whereYear('resolved_at', now()->year)
-            ->count();
+        // Memanggil metode privat untuk setiap set data.
+        $this->totalLocations = $this->getTotalLocations();
+        $this->openDamageReports = $this->getOpenDamageReports();
+        $this->totalUsers = $this->getTotalUsers();
+        $this->reportsCompletedThisMonth = $this->getCompletedReportsThisMonth();
+        $this->damageReportsByStatus = $this->getDamageReportsByStatus();
+        $this->usersByRole = $this->getUsersByRole();
+        $this->recentLocations = $this->getRecentLocations();
+        $this->recentDamageReports = $this->getRecentDamageReports();
+    }
 
-        // Detail Status Laporan Kerusakan
-        $this->damageReportsByStatus = DamageReport::query()
+    // Metode privat untuk setiap kueri data. Ini membuat `loadDashboardData` lebih bersih.
+
+    private function getTotalLocations(): int
+    {
+        return Location::count();
+    }
+
+    private function getOpenDamageReports(): int
+    {
+        // Status 'terbuka' didefinisikan secara eksplisit.
+        $openStatuses = ['dilaporkan', 'diverifikasi', 'dalam_perbaikan'];
+        return DamageReport::whereIn('status', $openStatuses)->count();
+    }
+
+    private function getTotalUsers(): int
+    {
+        return User::count();
+    }
+
+    private function getCompletedReportsThisMonth(): int
+    {
+        // Kueri yang lebih spesifik untuk laporan yang selesai bulan ini.
+        return DamageReport::where('status', 'selesai_diperbaiki')
+            ->whereYear('resolved_at', now()->year)
+            ->whereMonth('resolved_at', now()->month)
+            ->count();
+    }
+
+    private function getDamageReportsByStatus(): SupportCollection
+    {
+        // Menggunakan raw query untuk performa dan pengurutan custom.
+        return DamageReport::query()
             ->selectRaw('status, count(*) as count')
             ->groupBy('status')
-            // Urutan custom untuk status agar lebih logis di tampilan
             ->orderByRaw("FIELD(status, 'dilaporkan', 'diverifikasi', 'dalam_perbaikan', 'selesai_diperbaiki', 'dihapuskan')")
             ->pluck('count', 'status');
+    }
 
-        // Ringkasan Pengguna berdasarkan Peran
-        $this->usersByRole = User::query()
+    private function getUsersByRole(): SupportCollection
+    {
+        return User::query()
             ->selectRaw('role, count(*) as count')
             ->groupBy('role')
             ->pluck('count', 'role');
+    }
 
-        // Aktivitas Terbaru
-        $this->recentLocations = Location::latest()->take(5)->get();
+    private function getRecentLocations(int $limit = 5): Collection
+    {
+        // Mengambil lokasi terbaru dengan limit.
+        return Location::latest()->take($limit)->get();
+    }
 
+    private function getRecentDamageReports(int $limit = 5): Collection
+    {
         // Eager load relasi 'location' untuk menghindari N+1 query.
-        // Asumsi 'reported_by' adalah string, jadi tidak perlu eager load 'reporter' untuk nama.
-        $this->recentDamageReports = DamageReport::with('location')
-            ->latest('reported_at') // Atau 'created_at'
-            ->take(5)
+        return DamageReport::with('location:id,name')
+            ->latest('reported_at')
+            ->take($limit)
             ->get();
     }
 
     /**
-     * Metode render untuk menampilkan view.
+     * Render view komponen Livewire.
      */
     public function render()
     {
-        // Data sudah dimuat di mount() dan tersedia sebagai properti publik
-        return view('livewire.admin.dashboard') // Pastikan nama view ini sesuai
-            ->layout('layouts.app'); // Sesuaikan dengan layout utama Anda
+        // Semua properti sudah diisi di `mount()`, jadi view langsung merendernya.
+        return view('livewire.admin.dashboard')->layout('layouts.app');
     }
 }
