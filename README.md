@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="public\images\icon-web.png" alt="SISINPEM Logo" width="150"/>
+  <img src="public/images/icon-web.png" alt="SISINPEM Logo" width="150"/>
 </p>
 
 <h1 align="center">🚀 SISINPEM - Sistem Informasi Inventaris Pembelajaran 🚀</h1>
 
 <p align="center">
-  <strong>Kelola Aset Pembelajaran Anda dengan Cerdas, Efisien, dan Modern!</strong><br>
+  <strong>Kelola Aset Pembelajaran Berbasis Lokasi dengan Cerdas, Efisien, dan Modern!</strong><br>
   Dibangun dengan ❤️ oleh Kelompok 2 MIC2023 untuk tujuan pembelajaran.
 </p>
 
@@ -19,11 +19,11 @@
 
 ## 👋 Selamat Datang di SISINPEM!
 
-Pernahkah Anda kesulitan melacak inventaris penting untuk pembelajaran? SISINPEM hadir sebagai solusi! Aplikasi web inovatif ini dirancang khusus untuk institusi pendidikan yang ingin memodernisasi cara mereka mengelola aset dan perlengkapan. Lupakan kerumitan pencatatan manual dan sambut era digital pengelolaan inventaris yang terintegrasi dan mudah diakses.
+Pernahkah Anda kesulitan melacak kondisi dan aset penting di berbagai lokasi pembelajaran seperti laboratorium atau ruang kelas? SISINPEM hadir sebagai solusi! Aplikasi web inovatif ini dirancang khusus untuk institusi pendidikan yang ingin memodernisasi cara mereka mengelola lokasi dan melaporkan kerusakan aset di dalamnya. Lupakan kerumitan pencatatan manual dan sambut era digital pengelolaan inventaris yang terintegrasi.
 
-SISINPEM memberdayakan **administrator** dengan alat komprehensif untuk mencatat, memantau, dan mengelola setiap aset – mulai dari buku teks, peralatan laboratorium canggih, hingga perangkat elektronik terkini. Di sisi lain, **mahasiswa** mendapatkan kemudahan untuk melihat ketersediaan barang dan melaporkan kerusakan secara instan, memastikan proses pembelajaran berjalan lancar tanpa hambatan.
+SISINPEM memberdayakan **administrator** dengan alat komprehensif untuk mendata, memantau, dan mengelola setiap lokasi—mulai dari laboratorium, ruang teori, hingga fasilitas lainnya. Di sisi lain, **mahasiswa** mendapatkan kemudahan untuk melihat daftar lokasi yang ada dan melaporkan kerusakan secara instan, memastikan proses pembelajaran berjalan lancar tanpa hambatan.
 
-Dilengkapi dengan **notifikasi otomatis** untuk kejadian krusial seperti laporan kerusakan baru atau penambahan stok item, SISINPEM memastikan semua pihak terkait selalu mendapatkan informasi terkini.
+Dilengkapi dengan **notifikasi otomatis** untuk laporan kerusakan baru, SISINPEM memastikan semua pihak terkait selalu mendapatkan informasi terkini.
 
 ✨ **Catatan:** Untuk pengalaman pengguna terbaik dan akses ke semua fitur manajemen yang kaya, kami sangat merekomendasikan penggunaan SISINPEM pada perangkat desktop.
 
@@ -33,37 +33,35 @@ SISINPEM dikemas dengan fitur-fitur canggih untuk memaksimalkan efisiensi Anda:
 
 ### 👨‍💻 Untuk Admin Juara:
 
--   📊 **Dashboard Ringkasan Interaktif:** Pantau denyut nadi inventaris Anda! Statistik kunci item, kuantitas, kondisi barang, progres laporan kerusakan (terbuka/selesai), jumlah kategori, dan ringkasan pengguna, semuanya dalam satu tampilan dinamis.
--   🗂️ **Manajemen Kategori Fleksibel:** Atur kategori barang dengan mudah melalui operasi CRUD (Create, Read, Update, Delete) yang intuitif.
--   📦 **Manajemen Item Super Detail:** Kendalikan setiap item inventaris! CRUD lengkap dengan dukungan upload gambar, pemilihan kategori, pencatatan kode unik, kuantitas, kondisi (baik, rusak ringan/berat, perlu investigasi), dan lokasi penyimpanan.
--   🛠️ **Manajemen Laporan Kerusakan Proaktif:** Tangani laporan kerusakan dari mahasiswa atau buat laporan sendiri. Update status secara real-time (diverifikasi, dalam perbaikan, selesai, dihapuskan), tambahkan catatan penting, dan lihat detail lengkap termasuk tipe kerusakan (ringan, sedang, berat) dan bukti foto.
--   🔔 **Pusat Notifikasi Cerdas:** Jangan lewatkan informasi penting! Lihat daftar notifikasi sistem (laporan kerusakan baru, item baru), tandai sudah dibaca/belum dibaca, dan kelola histori notifikasi Anda.
--   👤 **Kontrol Pengguna Terpusat:** Sistem secara otomatis membedakan peran admin dan mahasiswa. Pembuatan akun pengguna dilakukan secara aman oleh administrator sistem melalui antarmuka basis data (seperti phpMyAdmin).
+-   📊 **Dashboard Ringkasan Interaktif:** Pantau denyut nadi inventaris Anda! Statistik kunci jumlah lokasi, progres laporan kerusakan (terbuka/selesai), dan ringkasan pengguna, semuanya dalam satu tampilan dinamis.
+-   🏢 **Manajemen Lokasi Detail:** Kendalikan setiap lokasi! CRUD (Create, Read, Update, Delete) lengkap dengan dukungan unggah gambar, nama lokasi, kapasitas, dan deskripsi aset yang ada di dalamnya.
+-   🛠️ **Manajemen Laporan Kerusakan Proaktif:** Tangani laporan kerusakan dari mahasiswa atau buat laporan sendiri. Perbarui status secara _real-time_ (diverifikasi, dalam perbaikan, selesai, dihapuskan), tambahkan catatan penting, dan lihat detail lengkap termasuk tipe kerusakan dan bukti foto.
+-   🔔 **Pusat Notifikasi Cerdas:** Jangan lewatkan informasi penting! Lihat daftar notifikasi sistem (laporan kerusakan baru), tandai sudah dibaca/belum dibaca, dan kelola histori notifikasi Anda.
+-   👤 **Kontrol Pengguna Terpusat:** Sistem secara otomatis membedakan peran admin dan mahasiswa. Pembuatan akun pengguna baru dilakukan secara aman oleh administrator sistem.
 
 ### 🧑‍🎓 Untuk Mahasiswa Aktif & Peduli:
 
 -   🏠 **Dashboard Mahasiswa Personal:** Lihat ringkasan laporan kerusakan yang pernah Anda buat dan akses cepat ke fitur-fitur penting.
--   🔍 **Eksplorasi Inventaris Mudah:** Cari dan filter daftar item inventaris yang tersedia dengan cepat dan mudah.
--   📝 **Pelaporan Kerusakan Instan:** Temukan barang rusak? Laporkan secara detail! Pilih item, tentukan tipe kerusakan (ringan, sedang, berat), berikan deskripsi, dan unggah foto kerusakan sebagai bukti.
+-   🔍 **Eksplorasi Lokasi Mudah:** Cari dan filter daftar lokasi yang tersedia dengan cepat untuk menemukan ruangan yang Anda tuju.
+-   📝 **Pelaporan Kerusakan Instan:** Menemukan kerusakan di sebuah lokasi? Laporkan secara detail! Pilih lokasi, tentukan tipe kerusakan (ringan, sedang, berat), berikan deskripsi, dan unggah foto kerusakan sebagai bukti.
 
 ### ⚡ Fitur Sistem Canggih:
 
--   🤖 **Notifikasi Otomatis Real-time:** Admin langsung tahu saat ada laporan kerusakan baru atau penambahan item inventaris penting.
--   🔐 **Keamanan Berbasis Peran:** Setiap pengguna mendapatkan akses dan fungsionalitas yang sesuai dengan perannya.
--   🎨 **Desain Antarmuka Modern & Bersih:** Tampilan yang didesain dengan tema warna biru (`blue-700`) yang profesional dan fokus pada kemudahan penggunaan (tanpa dark mode untuk konsistensi).
+-   🤖 **Notifikasi Otomatis Real-time:** Admin langsung tahu saat ada laporan kerusakan baru yang dikirim oleh mahasiswa.
+-   🔐 **Keamanan Berbasis Peran:** Setiap pengguna mendapatkan akses dan fungsionalitas yang sesuai dengan perannya (Admin atau Mahasiswa).
+-   🎨 **Desain Antarmuka Modern & Bersih:** Tampilan yang didesain dengan tema warna biru (`blue-700`) yang profesional dan fokus pada kemudahan penggunaan.
 -   💻 **Optimalisasi Desktop:** Rekomendasi kuat untuk penggunaan desktop guna memaksimalkan semua fitur manajemen.
 
 ## 🛠️ Dibangun Dengan Teknologi Terkini
 
 SISINPEM memanfaatkan kekuatan teknologi web modern untuk performa dan pengalaman pengguna terbaik:
 
--   **Framework Backend:** Laravel 11 (Kecepatan, Keamanan, Skalabilitas)
--   **Framework Frontend Dinamis:** Livewire (Interaktivitas Real-time Tanpa Reload Halaman)
--   **Scaffolding Autentikasi & UI:** Laravel Jetstream (Stack Livewire - Fondasi Kuat)
--   **Styling:** Tailwind CSS (Desain Utility-First yang Elegan dan Responsif)
--   **Ikon:** Heroicons (Antarmuka Visual yang Jelas dan Konsisten)
+-   **Framework Backend:** Laravel 11
+-   **Framework Frontend Dinamis:** Livewire
+-   **Scaffolding Autentikasi & UI:** Laravel Jetstream
+-   **Styling:** Tailwind CSS
+-   **Ikon:** Heroicons (via `blade-ui-kit/blade-heroicons`)
 -   **Database:** MySQL (Fleksibel untuk database relasional lain yang didukung Laravel)
--   **Web Server:** Apache/Nginx (atau `php artisan serve` untuk development kilat)
 -   **PHP:** Versi 8.2+
 -   **Manajemen Dependensi:** Composer (PHP), NPM/Yarn (JavaScript)
 
@@ -71,22 +69,20 @@ SISINPEM memanfaatkan kekuatan teknologi web modern untuk performa dan pengalama
 
 Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
 
-1.  **Clone GIT:**
+1.  **Clone Repositori GIT:**
 
     ```bash
     git clone [https://github.com/wahyu2021/sistem-inventaris-pembelajaran.git](https://github.com/wahyu2021/sistem-inventaris-pembelajaran.git) sisinpem
     cd sisinpem
     ```
 
-    Atau buat proyek baru: `composer create-project laravel/laravel sisinpem "11.*"`
-
-2.  **Instal Semua Dependensi PHP:**
+2.  **Instal Dependensi PHP:**
 
     ```bash
     composer install
     ```
 
-3.  **Persiapan Environment :**
+3.  **Persiapan File Environment:**
     Salin `.env.example` menjadi `.env`:
 
     ```bash
@@ -99,7 +95,7 @@ Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
     php artisan key:generate
     ```
 
-5.  **Atur Koneksi ke Database (Database di `.env`):**
+5.  **Atur Koneksi ke Database Anda di file `.env`:**
 
     ```env
     DB_CONNECTION=mysql
@@ -112,15 +108,22 @@ Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
     APP_URL=http://localhost:8000 # Penting untuk URL yang benar!
     ```
 
-6.  **Jalankan Migrasi & Seeder:**
+6.  **Jalankan Migrasi Database:**
+    Perintah ini akan membuat semua tabel yang diperlukan seperti `users`, `locations`, dan `damage_reports`.
 
     ```bash
-    php artisan migrate --seed
+    php artisan migrate
     ```
 
-    _(Pastikan Anda memiliki seeder untuk peran, kategori awal, atau user admin jika ingin data awal)_
+7.  **(Opsional) Jalankan Seeder untuk Membuat Akun Admin Awal:**
 
-7.  **Pasang Perlengkapan Frontend:**
+    ```bash
+    php artisan db:seed
+    ```
+
+    Perintah ini akan membuat satu akun Admin default agar Anda bisa langsung login.
+
+8.  **Instal Dependensi Frontend:**
 
     ```bash
     npm install && npm run dev
@@ -128,45 +131,45 @@ Ikuti langkah-langkah ini untuk menjalankan SISINPEM di lingkungan lokal Anda:
     # yarn install && yarn dev
     ```
 
-    _(Untuk produksi: `npm run build` atau `yarn build`)_
+    Untuk lingkungan produksi, gunakan: `npm run build`
 
-8.  **Aktifkan Gerbang Penyimpanan (Storage Link):**
+9.  **Buat Storage Link:**
+    Perintah ini penting agar gambar yang diunggah dapat diakses publik.
 
     ```bash
     php artisan storage:link
     ```
 
-9.  **Nyalakan Mesinnya! (Development Server):**
+10. **Jalankan Development Server:**
 
     ```bash
     php artisan serve
     ```
 
-    🎉 Aplikasi Anda siap di `http://localhost:8000`! 🎉
+    🎉 Aplikasi Anda sekarang siap diakses di `http://localhost:8000`! 🎉
 
-10. **(Opsional) Jaga Antrian Tetap Berjalan (Queue Worker):**
-    Untuk notifikasi dan tugas latar belakang:
+11. **(Opsional) Jalankan Queue Worker:**
+    Diperlukan agar notifikasi dapat diproses di latar belakang.
     ```bash
     php artisan queue:work
     ```
 
 ## 💡 Cara Menggunakan
 
-Setelah setup berhasil:
+Setelah proses instalasi berhasil:
 
 -   Buka aplikasi di browser Anda (`http://localhost:8000`).
 -   **Login Akun:**
-    -   🔒 Ingat! Tidak ada registrasi publik. Akun dibuat oleh Super Admin via phpMyAdmin.
-    -   **Contoh Akun Admin (dari Seeder):**
-        -   Email: `admin@example.com`
-        -   Password: `password` _(sesuaikan jika Anda mengubahnya di Seeder)_
-    -   **Contoh Akun Mahasiswa (dari Seeder):**
-        -   Email: `mahasiswa@example.com`
+    -   🔒 Ingat! Tidak ada registrasi publik. Akun dibuat oleh Admin melalui menu **Manajemen Pengguna** atau melalui database secara langsung.
+    -   **Akun Admin Default (jika Anda menjalankan seeder):**
+        -   Email: `test@example.com`
         -   Password: `password`
+    -   **Akun Mahasiswa:**
+        -   Harus dibuat terlebih dahulu oleh Admin dari dashboard manajemen pengguna.
 
 ## ✍️ Catatan Penting Mengenai Pendaftaran Pengguna
 
-Untuk menjaga integritas dan keamanan data, SISINPEM tidak menyediakan fitur pendaftaran publik. Pembuatan akun Admin dan Mahasiswa dilakukan secara terpusat oleh administrator sistem melalui antarmuka manajemen database.
+Untuk menjaga integritas dan keamanan data, SISINPEM tidak menyediakan fitur pendaftaran publik. Pembuatan akun Admin dan Mahasiswa dilakukan secara terpusat oleh administrator sistem melalui antarmuka **Manajemen Pengguna** di dalam aplikasi.
 
 ## 🙏 Ucapan Terima Kasih & Tim Pengembang
 
