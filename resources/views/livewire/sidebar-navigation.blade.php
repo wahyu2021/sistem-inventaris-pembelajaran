@@ -97,7 +97,7 @@
                             <a href="{{ route('mahasiswa.locations.index') }}"
                                 title="{{ !$sidebarOpen ? __('Cek & Lapor Barang') : '' }}"
                                 class="flex items-center py-2.5 px-3 rounded-md hover:bg-blue-600 group transition-colors duration-150
-                                {{ request()->routeIs('mahasiswa.locations.index') || request()->routeIs('mahasiswa.damages.report') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:text-white' }} {{-- Penyesuaian warna untuk tema biru --}}
+                                {{ request()->routeIs('mahasiswa.locations.index') || request()->routeIs('mahasiswa.damages.report') ? 'bg-blue-800' : '' }} {{-- Penyesuaian warna untuk tema biru --}}
                                 {{ !$sidebarOpen ? 'justify-center' : '' }}">
                                 <x-heroicon-o-archive-box-arrow-down
                                     class="h-6 w-6 shrink-0 {{ $sidebarOpen ? 'mr-3' : '' }}" />

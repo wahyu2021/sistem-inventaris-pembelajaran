@@ -365,7 +365,7 @@
                     <p class="text-slate-600 italic text-lg mb-4">"SISINPEM sangat membantu kami dalam mendata aset di
                         laboratorium. Proses pelaporan kerusakan dari mahasiswa saat praktikum menjadi jauh lebih cepat
                         dan terdokumentasi dengan baik."</p>
-                    <p class="font-bold text-slate-800">Ibu Dr. Fitriani, S.Kom., M.Kom.</p>
+                    <p class="font-bold text-slate-800">Sony Oktapriandi, S.Kom., M.Kom</p>
                     <p class="text-sm text-slate-500">Ketua Jurusan Manajemen Informatika</p>
                 </div>
             </div>

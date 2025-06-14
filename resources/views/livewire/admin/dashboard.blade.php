@@ -64,7 +64,6 @@
                     </div>
 
                     <div class="bg-white p-4 rounded-lg shadow-lg" wire:ignore>
-                        {{-- PERBAIKAN: Menggunakan kutip satu (') untuk x-data --}}
                         <div
                             x-data='{
                             labels: @json($reportsByLocationChart['labels'] ?? []),
