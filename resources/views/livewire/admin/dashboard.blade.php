@@ -15,6 +15,7 @@
                 <p class="text-sm text-slate-600">Berikut adalah ringkasan aktivitas sistem Anda hari ini,
                     {{ now()->translatedFormat('l, d F Y') }}.</p>
             </div>
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <x-dashboard-stat-card icon="heroicon-o-building-office" title="Total Lokasi" :value="$totalLocations"
                     color="blue" />
