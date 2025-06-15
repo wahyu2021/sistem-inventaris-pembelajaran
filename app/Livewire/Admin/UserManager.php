@@ -59,6 +59,7 @@ class UserManager extends Component
 
     public function save(UserService $userService): void
     {
+        abort_if(!auth()->user()->isAdmin(), 403, 'Aksi tidak diizinkan.');
         $this->form->validate();
 
         try {
@@ -89,7 +90,8 @@ class UserManager extends Component
      * Menghapus pengguna setelah dikonfirmasi.
      */
     public function deleteUser(UserService $userService): void
-    {
+    {   
+        abort_if(!auth()->user()->isAdmin(), 403, 'Aksi tidak diizinkan.');
         $user = User::find($this->userToDeleteId);
         if (!$user) {
             session()->flash('error', 'Pengguna tidak ditemukan.');

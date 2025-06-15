@@ -6,6 +6,7 @@ use App\Services\AdminDashboardService;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection as SupportCollection;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends Component
 {
