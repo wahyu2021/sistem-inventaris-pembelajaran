@@ -107,7 +107,7 @@
                 {{-- Paginasi --}}
                 @if ($myReports->hasPages())
                     <div class="mt-6">
-                        {{ $myReports->links() }}
+                        {{ $myReports->links('pagination::tailwind') }}
                     </div>
                 @endif
             </div>

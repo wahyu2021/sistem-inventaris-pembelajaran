@@ -25,6 +25,13 @@ class LocationManager extends Component
 
     protected $paginationTheme = 'tailwind';
 
+    public function mount()
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Anda tidak diizinkan mengakses halaman ini.');
+        }
+    }
+
     public function updatingSearch(): void
     {
         $this->resetPage();

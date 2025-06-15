@@ -35,8 +35,11 @@ class Dashboard extends Component
      * Mount komponen dan muat semua data melalui service.
      */
     public function mount(AdminDashboardService $dashboardService): void
-    {
-        $this->loadDashboardData($dashboardService);
+    {   if (!Auth::user()->isAdmin()) {
+            abort(403, 'Anda tidak diizinkan mengakses halaman ini.');
+        } else{
+            $this->loadDashboardData($dashboardService);
+        }
     }
 
     /**

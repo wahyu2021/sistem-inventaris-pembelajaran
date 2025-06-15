@@ -63,7 +63,7 @@
 
                 @if ($notifications->hasPages())
                     <div class="mt-6">
-                        {{ $notifications->links() }}
+                        {{ $notifications->links('pagination::tailwind') }}
                     </div>
                 @endif
             </div>

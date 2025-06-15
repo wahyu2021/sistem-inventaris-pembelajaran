@@ -34,6 +34,13 @@ class DamageReportManager extends Component
     public bool $confirmingReportDeletion = false;
 
     protected $paginationTheme = 'tailwind';
+    
+    public function mount()
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Anda tidak diizinkan mengakses halaman ini.');
+        }
+    }
 
     public function updating($property): void
     {
@@ -112,8 +119,8 @@ class DamageReportManager extends Component
     }
 
     /**
-    * Memicu unduhan file CSV berdasarkan filter yang aktif.
-    */
+     * Memicu unduhan file CSV berdasarkan filter yang aktif.
+     */
     public function export(): BinaryFileResponse
     {
         $fileName = 'laporan-kerusakan-' . now()->format('d-m-Y') . '.xlsx';

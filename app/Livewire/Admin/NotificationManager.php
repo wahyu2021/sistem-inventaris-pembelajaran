@@ -28,6 +28,13 @@ class NotificationManager extends Component
 
     protected $paginationTheme = 'tailwind';
 
+    public function mount()
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Anda tidak diizinkan mengakses halaman ini.');
+        }
+    }
+
     public function updating($property): void
     {
         if (in_array($property, ['search', 'filterReadStatus', 'filterSeverity'])) {
